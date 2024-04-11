@@ -11,3 +11,16 @@ export const hp = (percentage) => {
   const height = deviceHeight;
   return (percentage * height) / 100;
 };
+
+export const gridColumnCount = () => {
+  if (deviceWidth >= 1024) {
+    // desktop
+    return 4;
+  } else if (deviceWidth >= 685) {
+    // tablet
+    return 3;
+  } else {
+    // phone
+    return 2;
+  }
+};

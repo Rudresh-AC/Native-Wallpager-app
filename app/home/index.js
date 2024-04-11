@@ -10,15 +10,33 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FontAwesome6, Feather, Ionicons } from "@expo/vector-icons";
 import { theme } from "../../constants/theme";
 import { hp, wp } from "../../helpers/common";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Categories from "../../components/Categories";
+import { apiCall } from "../../api/index";
+import ImageGride from "../../components/imageGrides";
 
 const HomeScreen = () => {
   const { top } = useSafeAreaInsets();
   const paddingTop = top > 0 ? top + 10 : 30;
   const [search, setSearch] = useState("");
   const searchInputRef = useRef(null);
+  const [images, setImages] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
+  const fetchImages = async (params = { page: 1 }, append = false) => {
+    let res = await apiCall(params);
+    if (res.success && res?.data?.hits) {
+      if (append) {
+        setImages([...res.data.hits]);
+      } else {
+        setImages([...res.data.hits]);
+      }
+    }
+  };
 
   const handleChangeCategory = (category) => {
     setActiveCategory(category);
@@ -78,6 +96,9 @@ const HomeScreen = () => {
             handleChangeCategory={handleChangeCategory}
           />
         </View>
+
+        {/* images masonry grid */}
+        <View>{images.length > 0 && <ImageGride images={images} />}</View>
       </ScrollView>
     </View>
   );
